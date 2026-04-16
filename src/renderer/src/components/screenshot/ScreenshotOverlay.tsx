@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import RegionSelector, { type Region } from './RegionSelector'
+import AnnotationCanvas from './AnnotationCanvas'
 
 type Phase = 'selecting' | 'annotating'
 
@@ -38,21 +39,20 @@ export default function ScreenshotOverlay() {
     )
   }
 
-  // Annotation phase placeholder — will be replaced in Task 9
-  return (
-    <div className="fixed inset-0">
-      <img src={screenshotDataUrl} className="absolute inset-0 w-full h-full object-cover" draggable={false} />
-      <div className="absolute inset-0 bg-black/45" />
-      {region && (
-        <div
-          className="absolute border-2 border-[#5b9cf5]"
-          style={{ left: region.x, top: region.y, width: region.width, height: region.height }}
-        >
-          <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 bg-[#1a1a2e] text-white text-sm px-4 py-2 rounded-lg whitespace-nowrap">
-            标注功能即将实现... (Esc 取消)
-          </div>
-        </div>
-      )}
-    </div>
-  )
+  if (phase === 'annotating' && region) {
+    return (
+      <AnnotationCanvas
+        screenshotDataUrl={screenshotDataUrl}
+        region={region}
+        onDone={(action, imageDataUrl) => {
+          window.api.screenshotDone(action, imageDataUrl)
+        }}
+        onCancel={() => {
+          window.api.cancelScreenshot()
+        }}
+      />
+    )
+  }
+
+  return null
 }

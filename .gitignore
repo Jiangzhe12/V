@@ -1,0 +1,13 @@
+node_modules/
+out/
+dist/
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+*.pnp.*
+.DS_Store
+.claude/
+.superpowers/

@@ -1,4 +1,6 @@
-import { ipcMain, clipboard, BrowserWindow } from 'electron'
+import { ipcMain, clipboard, BrowserWindow, nativeImage } from 'electron'
+import { existsSync, mkdirSync, writeFileSync } from 'fs'
+import { join } from 'path'
 import {
   getClipboardHistory,
   deleteClipboardEntry,
@@ -6,6 +8,7 @@ import {
   getSettings
 } from './store'
 import { setLastText } from './clipboard-monitor'
+import { closeScreenshotWindows, createPinWindow, closePinWindow } from './window-manager'
 
 export function registerIpcHandlers(
   getClipboardWindow: () => BrowserWindow | null
@@ -48,5 +51,36 @@ export function registerIpcHandlers(
 
   ipcMain.handle('settings:get', () => {
     return getSettings()
+  })
+
+  // --- Screenshot ---
+  ipcMain.on('screenshot:cancel', () => {
+    closeScreenshotWindows()
+  })
+
+  ipcMain.on('screenshot:done', (_event, action: string, imageDataUrl: string) => {
+    closeScreenshotWindows()
+
+    if (action === 'copy') {
+      const img = nativeImage.createFromDataURL(imageDataUrl)
+      clipboard.writeImage(img)
+    } else if (action === 'save') {
+      const settings = getSettings()
+      const savePath = settings.screenshotSavePath
+      if (!existsSync(savePath)) {
+        mkdirSync(savePath, { recursive: true })
+      }
+      const filename = `V_${new Date().toISOString().replace(/[:.]/g, '-')}.png`
+      const filePath = join(savePath, filename)
+      const img = nativeImage.createFromDataURL(imageDataUrl)
+      writeFileSync(filePath, img.toPNG())
+    } else if (action === 'pin') {
+      createPinWindow(imageDataUrl)
+    }
+  })
+
+  // --- Pin ---
+  ipcMain.on('pin:close', (event) => {
+    closePinWindow(event.sender)
   })
 }

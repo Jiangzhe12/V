@@ -3,6 +3,7 @@ import { join } from 'path'
 import { startClipboardMonitor } from './clipboard-monitor'
 import { registerIpcHandlers } from './ipc-handlers'
 import { getSettings } from './store'
+import { startScreenshot, createPinWindow } from './window-manager'
 
 let tray: Tray | null = null
 let clipboardWindow: BrowserWindow | null = null
@@ -80,6 +81,18 @@ function registerShortcuts(): void {
 
   globalShortcut.register(settings.shortcuts.clipboard, () => {
     toggleClipboardPopup()
+  })
+
+  globalShortcut.register(settings.shortcuts.screenshot, () => {
+    startScreenshot()
+  })
+
+  globalShortcut.register(settings.shortcuts.pin, () => {
+    const { clipboard: cb } = require('electron')
+    const img = cb.readImage()
+    if (!img.isEmpty()) {
+      createPinWindow(img.toDataURL())
+    }
   })
 }
 

@@ -37,8 +37,7 @@ export async function startScreenshot(): Promise<void> {
       hasShadow: false,
       enableLargerThanScreen: true,
       webPreferences: {
-        preload: join(__dirname, '../preload/index.js'),
-        sandbox: false
+        preload: join(__dirname, '../preload/index.js')
       }
     })
 
@@ -97,8 +96,7 @@ export function createPinWindow(imageDataUrl: string): void {
     minimizable: false,
     maximizable: false,
     webPreferences: {
-      preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
+      preload: join(__dirname, '../preload/index.js')
     }
   })
 

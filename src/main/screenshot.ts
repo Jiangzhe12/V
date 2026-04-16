@@ -15,8 +15,8 @@ export async function captureAllScreens(): Promise<CapturedScreen[]> {
     }
   })
 
-  return displays.map((display, index) => {
-    const source = sources[index] || sources[0]
+  return displays.map((display) => {
+    const source = sources.find((s) => s.display_id === display.id.toString()) || sources[0]
     return {
       dataUrl: source.thumbnail.toDataURL(),
       display

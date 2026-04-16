@@ -30,6 +30,8 @@ const api = {
   },
   closePin: () => ipcRenderer.send('pin:close'),
   movePinWindow: (dx: number, dy: number) => ipcRenderer.send('pin:move-by', dx, dy),
+  togglePinOnTop: () => ipcRenderer.send('pin:toggle-on-top'),
+  togglePinClickThrough: () => ipcRenderer.send('pin:toggle-click-through'),
 
   // Settings
   getSettings: () => ipcRenderer.invoke('settings:get')

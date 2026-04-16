@@ -71,6 +71,10 @@ export default function ClipboardPopup() {
             deleteEntry(selectedIndex)
           }
           break
+        case 'Escape':
+          e.preventDefault()
+          window.blur()
+          break
       }
 
       // ⌘+1 through ⌘+9
@@ -85,7 +89,9 @@ export default function ClipboardPopup() {
       // ⌘+Backspace: clear all
       if (e.metaKey && e.key === 'Backspace') {
         e.preventDefault()
-        window.api.clearHistory()
+        if (confirm('确定清空全部历史？')) {
+          window.api.clearHistory()
+        }
       }
     }
 

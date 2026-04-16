@@ -1,6 +1,7 @@
 import { ipcMain, clipboard, BrowserWindow, nativeImage } from 'electron'
 import { existsSync, mkdirSync, writeFileSync } from 'fs'
 import { join } from 'path'
+import { exec } from 'child_process'
 import {
   getClipboardHistory,
   deleteClipboardEntry,
@@ -30,8 +31,7 @@ export function registerIpcHandlers(
 
     // Simulate Cmd+V to paste into frontmost app
     setTimeout(() => {
-      const { execSync } = require('child_process')
-      execSync(
+      exec(
         `osascript -e 'tell application "System Events" to keystroke "v" using command down'`
       )
     }, 100)
@@ -89,6 +89,25 @@ export function registerIpcHandlers(
     if (win) {
       const [x, y] = win.getPosition()
       win.setPosition(x + dx, y + dy)
+    }
+  })
+
+  ipcMain.on('pin:toggle-on-top', (event) => {
+    const win = BrowserWindow.fromWebContents(event.sender)
+    if (win) {
+      const isOnTop = win.isAlwaysOnTop()
+      win.setAlwaysOnTop(!isOnTop, isOnTop ? undefined : 'floating')
+    }
+  })
+
+  ipcMain.on('pin:toggle-click-through', (event) => {
+    const win = BrowserWindow.fromWebContents(event.sender)
+    if (win) {
+      const current = (win as any)._clickThrough ?? false
+      const next = !current
+      win.setIgnoreMouseEvents(next, { forward: true })
+      ;(win as any)._clickThrough = next
+      event.sender.send('pin:click-through-changed', next)
     }
   })
 }

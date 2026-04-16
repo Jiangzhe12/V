@@ -5,6 +5,8 @@ export default function PinWindow() {
   const [opacity, setOpacity] = useState(1)
   const [scale, setScale] = useState(1)
   const [showToolbar, setShowToolbar] = useState(false)
+  const [isOnTop, setIsOnTop] = useState(true)
+  const [isClickThrough, setIsClickThrough] = useState(false)
   const isDragging = useRef(false)
   const lastPos = useRef({ x: 0, y: 0 })
 
@@ -85,6 +87,28 @@ export default function PinWindow() {
 
       {showToolbar && (
         <div className="absolute -top-7 right-0 flex gap-0.5 bg-[#1a1a2e] rounded-md px-1.5 py-0.5 shadow-lg">
+          <button
+            className={`w-5 h-5 flex items-center justify-center text-[10px] rounded transition-colors ${isOnTop ? 'text-blue-400' : 'text-gray-400 hover:text-blue-400'}`}
+            title="置顶"
+            onClick={(e) => {
+              e.stopPropagation()
+              window.api.togglePinOnTop()
+              setIsOnTop((v) => !v)
+            }}
+          >
+            📌
+          </button>
+          <button
+            className={`w-5 h-5 flex items-center justify-center text-[10px] rounded transition-colors ${isClickThrough ? 'text-blue-400' : 'text-gray-400 hover:text-blue-400'}`}
+            title="鼠标穿透"
+            onClick={(e) => {
+              e.stopPropagation()
+              window.api.togglePinClickThrough()
+              setIsClickThrough((v) => !v)
+            }}
+          >
+            👆
+          </button>
           <button
             className="w-5 h-5 flex items-center justify-center text-[10px] text-gray-400 hover:text-red-400 rounded transition-colors"
             title="关闭 (双击)"

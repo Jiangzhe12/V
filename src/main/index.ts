@@ -60,8 +60,7 @@ function createClipboardWindow(): void {
     transparent: true,
     skipTaskbar: true,
     webPreferences: {
-      preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
+      preload: join(__dirname, '../preload/index.js')
     }
   })
 

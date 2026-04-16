@@ -87,6 +87,7 @@ export interface VApi {
   // Pin
   onPinInit: (callback: (pinId: string, imageDataUrl: string) => void) => () => void
   closePin: () => void
+  movePinWindow: (dx: number, dy: number) => void
 
   // Settings
   getSettings: () => Promise<AppSettings>

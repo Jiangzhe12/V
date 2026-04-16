@@ -83,4 +83,12 @@ export function registerIpcHandlers(
   ipcMain.on('pin:close', (event) => {
     closePinWindow(event.sender)
   })
+
+  ipcMain.on('pin:move-by', (event, dx: number, dy: number) => {
+    const win = BrowserWindow.fromWebContents(event.sender)
+    if (win) {
+      const [x, y] = win.getPosition()
+      win.setPosition(x + dx, y + dy)
+    }
+  })
 }

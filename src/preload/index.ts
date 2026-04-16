@@ -29,6 +29,7 @@ const api = {
     return () => ipcRenderer.removeListener('pin:init', handler)
   },
   closePin: () => ipcRenderer.send('pin:close'),
+  movePinWindow: (dx: number, dy: number) => ipcRenderer.send('pin:move-by', dx, dy),
 
   // Settings
   getSettings: () => ipcRenderer.invoke('settings:get')
